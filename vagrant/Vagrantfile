@@ -1,0 +1,43 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+SCRIPT_PATH_COMMON = "../scripts/common.sh"
+SCRIPT_PATH_MANAGER = "../scripts/manager.sh"
+SCRIPT_PATH_NODE = "../scripts/node.sh"
+
+Vagrant.configure("2") do |config|
+  # Common block
+  config.vm.box = "ubuntu/trusty64"
+
+  # Disable automatic box update checking. 
+  config.vm.box_check_update = false
+
+  # Common provision script
+  config.vm.provision "shell",
+	path: SCRIPT_PATH_COMMON
+
+  # Manager node block
+  config.vm.define "manager" do |manager|
+	manager.vm.hostname = "manager"
+	manager.vm.provision "shell",
+	  path: SCRIPT_PATH_MANAGER
+	manager.vm.network "private_network", ip: "192.168.10.10"
+  end
+
+  # Node 1 block
+  config.vm.define "node1" do |node1|
+	node1.vm.hostname = "node1"
+	node1.vm.provision "shell",
+	  path: SCRIPT_PATH_NODE
+	node1.vm.network "private_network", ip: "192.168.10.11"
+  end
+
+  # Node 2 block
+  config.vm.define "node2" do |node2|
+	node2.vm.hostname = "node2"
+	node2.vm.provision "shell",
+	  path: SCRIPT_PATH_NODE
+	node2.vm.network "private_network", ip: "192.168.10.12"
+  end
+
+end
