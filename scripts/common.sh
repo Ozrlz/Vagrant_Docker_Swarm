@@ -25,7 +25,15 @@ apt-get update && apt-get install -y docker-ce
 # Add the vagrant user to the docker group c:
 usermod -aG docker vagrant
 
-# Add the hosts in the /etc/hosts file
-echo -e "192.168.10.10\tmanager\tmanager" >> /etc/hosts
-echo -e "192.168.10.11\tnode1\tnode1"  >> /etc/hosts
-echo -e "192.168.10.12\tnode2\tnode2"  >> /etc/hosts
+# Add the hosts in the /etc/hosts file only if the're not in 
+egrep -e '^origin$|^manager[0-9]$|^node[0-9]$' /etc/hosts
+if [ $? != 0 ]
+then
+    echo -e "192.168.10.10\torigin\torigin" >> /etc/hosts
+    echo -e "192.168.10.11\tmanager1\tmanager1" >> /etc/hosts
+    echo -e "192.168.10.21\tnode1\tnode1"  >> /etc/hosts
+    echo -e "192.168.10.22\tnode2\tnode2"  >> /etc/hosts
+fi
+
+# Purge
+apt-get autoremove -y
